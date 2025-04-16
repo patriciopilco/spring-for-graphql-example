@@ -7,6 +7,7 @@ import com.geezylucas.springforgraphqlexample.exception.NotFoundException;
 import com.geezylucas.springforgraphqlexample.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -18,6 +19,16 @@ public class BookService {
     public Mono<BookDTO> findByBookId(Integer bookId) {
         return bookRepository.findById(bookId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Book not found!")))
+                .map(bookEntity -> BookDTO.builder()
+                        .id(bookEntity.getId())
+                        .name(bookEntity.getName())
+                        .pageCount(bookEntity.getPageCount())
+                        .authorId(bookEntity.getAuthorId())
+                        .build());
+    }
+
+    public Flux<BookDTO> findAllBooks() {
+        return bookRepository.findAll()
                 .map(bookEntity -> BookDTO.builder()
                         .id(bookEntity.getId())
                         .name(bookEntity.getName())

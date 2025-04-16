@@ -9,6 +9,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,6 +20,11 @@ public class BookController {
     @QueryMapping
     public Mono<BookDTO> bookById(@Argument Integer id) {
         return bookService.findByBookId(id);
+    }
+
+    @QueryMapping
+    public Flux<BookDTO> allBooks() {
+        return bookService.findAllBooks();
     }
 
     @MutationMapping
